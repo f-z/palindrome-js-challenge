@@ -13,7 +13,7 @@ palindromeUnitRoutes.route('/add').post(function (req, res) {
       res.status(200).json({ 'palindromeUnit': 'PalindromeUnit added successfully' });
     })
     .catch(err => {
-      res.status(400).send("Unable to save to database");
+      res.status(400).send("Unable to save to database\n" + err);
     });
 });
 
