@@ -1,14 +1,15 @@
 import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import { Http } from "@angular/http";
 import { Observable } from "rxjs/internal/Observable";
 
 @Injectable({
   providedIn: "root"
 })
-export class PalindromeApiService {
+export class PalindromeAPIService {
   uri = "http://localhost:4000/palindromes/";
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: Http) { }
+
   // Function to store a new palindrome to the database, along with a timestamp
   addPalindromeUnit(palindrome, time): any {
     const obj = {

@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { PalindromeApiService } from "./services/palindrome.service";
+import { PalindromeAPIService } from "./services/palindrome.service";
 
 @Component({
   selector: "app-root",
@@ -15,12 +15,12 @@ export class AppComponent {
 
   storedPalindromes: any;
 
-  constructor(private palService: PalindromeApiService) {
+  constructor(private palService: PalindromeAPIService) {
     this.palindrome = "";
     this.message = "";
 
     this.palService.getAllPalindromes().subscribe(result => {
-      this.storedPalindromes = result;
+      this.storedPalindromes = result.json();
     });
   }
 
@@ -30,7 +30,7 @@ export class AppComponent {
       palindrome,
       new Date().getTime() / 1000
     ).subscribe(res => {
-      this.message = res.message;
+      this.message = res.json().message;
     });
   }
 }
