@@ -1,29 +1,36 @@
-import { Component } from '@angular/core';
-import { PalindromeApiService } from './services/palindrome.service';
+import { Component } from "@angular/core";
+import { PalindromeApiService } from "./services/palindrome.service";
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  selector: "app-root",
+  templateUrl: "./app.component.html",
+  styleUrls: ["./app.component.css"]
 })
 export class AppComponent {
-  title = 'Rocketship';
+  title = "Palindrome Rocketship";
 
   // Palindrome to be stored
   palindrome: string;
+  message: string;
 
   storedPalindromes: any;
 
   constructor(private palService: PalindromeApiService) {
-    this.palindrome = 'dcabacd';
-    // this.savePalindrome(this.palindrome, new Date().getTime() / 1000);
+    this.palindrome = "";
+    this.message = "";
 
     this.palService.getAllPalindromes().subscribe(result => {
       this.storedPalindromes = result;
-    })
+    });
   }
 
-  savePalindrome(palindrome, date) {
-    this.palService.addPalindromeUnit(palindrome, date);
+  // Function to store a palindrome to the database, along with the current time (in Unix)
+  savePalindrome(palindrome): any {
+    this.palService.addPalindromeUnit(
+      palindrome,
+      new Date().getTime() / 1000
+    ).subscribe(res => {
+      this.message = res.message;
+    });
   }
 }

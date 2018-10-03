@@ -3,16 +3,32 @@
   <h1>
     {{ title }}
   </h1>
-  <img width="300" alt="Rocketship Clipart" src="./assets/img/rocketship-clipart.png">
+
+  <br>
+
+  <img height="200" alt="Rocketship Clipart" src="./assets/img/rocketship-clipart.png">
 
   <br>
   <br>
 
   <h2>
-    Palindrome Frenzy
+    Most recent palindromes
   </h2>
 
   <li *ngFor="let palindromeObject of storedPalindromes">
     <span>{{palindromeObject.palindrome}}</span>
   </li>
+
+  <br>
+
+  <h2>
+    New palindrome
+  </h2>
+  <input #box (keyup.enter)="savePalindrome(box.value)">
+  <button (click)="savePalindrome(box.value)">Submit</button>
+
+  <br>
+  <br>
+
+  <span [ngStyle]="{'color':message.charAt(0) === 'P' ? 'green' : 'red' }">{{message}}</span>
 </div>

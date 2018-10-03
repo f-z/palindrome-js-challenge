@@ -6,7 +6,7 @@ let PalindromeUnit = new Schema({
   palindrome: {
     type: String
   },
-  date: {
+  time: {
     type: Number
   }
 }, {

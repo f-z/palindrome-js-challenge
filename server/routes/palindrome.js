@@ -11,14 +11,20 @@ palindromeUnitRoutes.route('/post').post(function (req, res) {
   // Checking if string posted is a palindrome
   if (isPalindrome(palindromeUnit.palindrome)) {
     palindromeUnit.save()
-    .then(result => {
-      res.status(200).json({ success: true, message: 'Palindrome stored successfully' });
-    })
-    .catch(error => {
-      res.status(400).send("Unable to save to database\n" + error);
-    });
+      .then(result => {
+        res.status(200).json({
+          success: true,
+          message: 'Palindrome stored successfully'
+        });
+      })
+      .catch(error => {
+        res.status(400).send("Unable to save to database!\n" + error);
+      });
   } else {
-    res.status(200).json({ success: false, message: 'Not a palindrome!'});
+    res.status(200).json({
+      success: false,
+      message: 'Not a palindrome!'
+    });
   }
 });
 
@@ -26,13 +32,13 @@ palindromeUnitRoutes.route('/post').post(function (req, res) {
 function isPalindrome(string) {
   // Regular expression with unwanted characters
   var re = /[\W_]/g; // Equivalent alternative: /[^A-Za-z0-9]/g;
-  
+
   // Lowercasing the string and removing unwanted characters
   var processedStr = string.toLowerCase().replace(re, '');
-     
+
   // Reversing the string by chaining methods
-  var reverseStr = processedStr.split('').reverse().join(''); 
-   
+  var reverseStr = processedStr.split('').reverse().join('');
+
   // Checking if reverseStr is equal to processedStr
   return reverseStr === processedStr;
 }
@@ -42,10 +48,17 @@ palindromeUnitRoutes.route('/get').get(function (req, res) {
   PalindromeUnit.find(function (err, palindromeUnits) {
     if (err) {
       console.log(err);
-    }
-    else {
-      // Returning ten most recent elements
-      res.json(palindromeUnits.reverse().slice(0, 10));
+    } else {
+      // Returning ten most recent elements,
+      var recentPalindromes = palindromeUnits.reverse().slice(0, 10);
+      // if they are were stored within the last 10 minutes
+      var palWithin10Minutes = [];
+      var currentTime = new Date();
+      for (var i = 0; i < recentPalindromes.length; i++) {
+        if ((currentTime.getTime() / 1000) - recentPalindromes[i].time <= 600) // 10 min = 600 s
+          palWithin10Minutes.push(recentPalindromes[i]);
+      }
+      res.json(palWithin10Minutes);
     }
   });
 });
@@ -62,17 +75,17 @@ palindromeUnitRoutes.route('/edit/:id').get(function (req, res) {
 palindromeUnitRoutes.route('/update/:id').post(function (req, res) {
   PalindromeUnit.findById(req.params.id, function (err, palindromeUnit) {
     if (!palindromeUnit)
-      return next(new Error('Could not load document'));
+      return next(new Error('Could not load document!'));
     else {
       palindromeUnit.term = req.body.term;
       palindromeUnit.date = req.body.date;
       palindromeUnit.count = req.body.term;
 
       palindromeUnit.save().then(palindromeUnit => {
-        res.json('Update complete');
-      })
+          res.json('Update complete');
+        })
         .catch(err => {
-          res.status(400).send("Unable to update database\n" + err);
+          res.status(400).send("Unable to update database!\n" + err);
         });
     }
   });
@@ -80,7 +93,9 @@ palindromeUnitRoutes.route('/update/:id').post(function (req, res) {
 
 // Defined delete | remove | destroy route
 palindromeUnitRoutes.route('/delete/:id').get(function (req, res) {
-  PalindromeUnit.findByIdAndRemove({ _id: req.params.id }, function (err, palindromeUnit) {
+  PalindromeUnit.findByIdAndRemove({
+    _id: req.params.id
+  }, function (err, palindromeUnit) {
     if (err) res.json(err);
     else res.json('Successfully removed');
   });
