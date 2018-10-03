@@ -9,14 +9,18 @@ import { PalindromeApiService } from './services/palindrome.service';
 export class AppComponent {
   title = 'Rocketship';
 
+  // Palindrome to be stored
   palindrome: string;
 
-  constructor(private palService: PalindromeApiService) {
-    // default values
-    this.palindrome = 'aba';
-    this.savePalindrome(this.palindrome, new Date().getTime() / 1000);
+  storedPalindromes: any;
 
-    this.palService.getAllPalindromes().subscribe(result => {console.log(result)})
+  constructor(private palService: PalindromeApiService) {
+    this.palindrome = 'dcabacd';
+    // this.savePalindrome(this.palindrome, new Date().getTime() / 1000);
+
+    this.palService.getAllPalindromes().subscribe(result => {
+      this.storedPalindromes = result;
+    })
   }
 
   savePalindrome(palindrome, date) {

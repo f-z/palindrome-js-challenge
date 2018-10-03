@@ -8,14 +8,34 @@ let PalindromeUnit = require('../models/PalindromeUnit');
 // Defining store route
 palindromeUnitRoutes.route('/post').post(function (req, res) {
   let palindromeUnit = new PalindromeUnit(req.body);
-  palindromeUnit.save()
+  // Checking if string posted is a palindrome
+  if (isPalindrome(palindromeUnit.palindrome)) {
+    palindromeUnit.save()
     .then(result => {
-      res.status(200).json({ success: true, message: 'PalindromeUnit stored successfully' });
+      res.status(200).json({ success: true, message: 'Palindrome stored successfully' });
     })
     .catch(error => {
       res.status(400).send("Unable to save to database\n" + error);
     });
+  } else {
+    res.status(200).json({ success: false, message: 'Not a palindrome!'});
+  }
 });
+
+// Function to check if a given string is a palindrome
+function isPalindrome(string) {
+  // Regular expression with unwanted characters
+  var re = /[\W_]/g; // Equivalent alternative: /[^A-Za-z0-9]/g;
+  
+  // Lowercasing the string and removing unwanted characters
+  var processedStr = string.toLowerCase().replace(re, '');
+     
+  // Reversing the string by chaining methods
+  var reverseStr = processedStr.split('').reverse().join(''); 
+   
+  // Checking if reverseStr is equal to processedStr
+  return reverseStr === processedStr;
+}
 
 // Defining get data route
 palindromeUnitRoutes.route('/get').get(function (req, res) {
@@ -24,7 +44,8 @@ palindromeUnitRoutes.route('/get').get(function (req, res) {
       console.log(err);
     }
     else {
-      res.json(palindromeUnits);
+      // Returning ten most recent elements
+      res.json(palindromeUnits.reverse().slice(0, 10));
     }
   });
 });

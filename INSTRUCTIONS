@@ -1,0 +1,17 @@
+The function checking whether a given string is a palindrome is in the
+server/routes/palindrome.js
+file.
+
+To run the mongo daemon, use the following command:
+mongod --dbpath ./db --port 27018
+
+To run the server, first cd into the server folder and run npm install.
+Then use:
+node server
+
+To run the client app, cd into client and run npm install here, too.
+Then you can use:
+npm start
+or
+ng serve --o
+to automatically open the browser window.
