@@ -5,7 +5,7 @@ import {
   inject
 } from '@angular/core/testing';
 import {
-  Headers, BaseRequestOptions,
+  BaseRequestOptions,
   Response, HttpModule, Http, XHRBackend, RequestMethod
 } from '@angular/http';
 
@@ -45,12 +45,7 @@ describe('Palindrome API Service', () => {
         (connection: MockConnection) => {
           connection.mockRespond(new Response(
             new ResponseOptions({
-              body: [
-                {
-                  id: 26,
-                  contentRendered: '<p><b>Hi there</b></p>',
-                  contentMarkdown: '*Hi there*'
-                }]
+              body: [{ "palindrome": "aba", "time": 1538594474 }]
             }
             )));
         });
@@ -58,10 +53,10 @@ describe('Palindrome API Service', () => {
       palindromeService.getAllPalindromes()
         .subscribe(
           (data) => {
-            let res = data.json();
-            expect(res.length).toBe(1);
-            expect(res[0].id).toBe(26);
-            expect(res[0].contentMarkdown).toBe('*Hi there*');
+            let response = data.json();
+            expect(response.length).toBe(1);
+            expect(response[0].palindrome).toBe("aba");
+            expect(response[0].time).toBe(1538594474);
           });
     })));
 
@@ -70,30 +65,36 @@ describe('Palindrome API Service', () => {
       mockBackend.connections.subscribe((connection: MockConnection) => {
         // Checking if the REST type is the correct one (POST)
         expect(connection.request.method).toBe(RequestMethod.Post);
-        connection.mockRespond(new Response(new ResponseOptions({ status: 200 })));
+        connection.mockRespond(new Response(new ResponseOptions({ status: 200, body: '{"success":true,"message":"Palindrome stored successfully"}' })));
       });
 
-      let data = 'aba';
-      palindromeService.addPalindromeUnit(data).subscribe(
-        (successResult) => {
-          expect(successResult).toBeDefined();
-          expect(successResult.status).toBe(200);
+      let palindrome = 'aba';
+      palindromeService.addPalindromeUnit(palindrome).subscribe(
+        (data) => {
+          expect(data).toBeDefined();
+          expect(data['status']).toBe(200);
+          let response = data.json();
+          expect(response.success).toBe(true);
+          expect(response.message).toBe("Palindrome stored successfully");
         });
     })));
 
-    it('should not insert an entry that is not a palindrome',
+  it('should not insert an entry that is not a palindrome',
     async(inject([PalindromeAPIService], (palindromeService) => {
       mockBackend.connections.subscribe((connection: MockConnection) => {
         // Checking if the REST type is the correct one (POST)
         expect(connection.request.method).toBe(RequestMethod.Post);
-        connection.mockRespond(new Response(new ResponseOptions({ status: 200 })));
+        connection.mockRespond(new Response(new ResponseOptions({ status: 200, body: '{"success":false,"message":"Not a palindrome!"}' })));
       });
 
-      let data = 'ab';
-      palindromeService.addPalindromeUnit(data).subscribe(
-        (successResult) => {
-          expect(successResult).toBeDefined();
-          expect(successResult.status).toBe(200);
+      let palindrome = 'ab';
+      palindromeService.addPalindromeUnit(palindrome).subscribe(
+        (data) => {
+          expect(data).toBeDefined();
+          expect(data.status).toBe(200);
+          let response = data.json();
+          expect(response.success).toBe(false);
+          expect(response.message).toBe("Not a palindrome!");
         });
     })));
 });
