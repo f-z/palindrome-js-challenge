@@ -7,7 +7,7 @@ import { PalindromeApiService } from './services/palindrome.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'Reach Rocketship';
+  title = 'Rocketship';
 
   palindrome: string;
 
@@ -15,6 +15,8 @@ export class AppComponent {
     // default values
     this.palindrome = 'aba';
     this.savePalindrome(this.palindrome, new Date().getTime() / 1000);
+
+    this.palService.getAllPalindromes().subscribe(result => {console.log(result)})
   }
 
   savePalindrome(palindrome, date) {

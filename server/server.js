@@ -23,7 +23,7 @@ app.use(bodyParser.json());
 app.use(cors());
 const port = process.env.PORT || 4000;
 
-app.use("/palindromeunits", palindromeUnitRoutes);
+app.use("/palindromes", palindromeUnitRoutes);
 
 const server = app.listen(port, function() {
   console.log("Listening on port: " + port);

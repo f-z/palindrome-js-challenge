@@ -6,19 +6,19 @@ const palindromeUnitRoutes = express.Router();
 let PalindromeUnit = require('../models/PalindromeUnit');
 
 // Defining store route
-palindromeUnitRoutes.route('/add').post(function (req, res) {
+palindromeUnitRoutes.route('/post').post(function (req, res) {
   let palindromeUnit = new PalindromeUnit(req.body);
   palindromeUnit.save()
-    .then(game => {
-      res.status(200).json({ 'palindromeUnit': 'PalindromeUnit added successfully' });
+    .then(result => {
+      res.status(200).json({ success: true, message: 'PalindromeUnit stored successfully' });
     })
-    .catch(err => {
-      res.status(400).send("Unable to save to database\n" + err);
+    .catch(error => {
+      res.status(400).send("Unable to save to database\n" + error);
     });
 });
 
 // Defining get data route
-palindromeUnitRoutes.route('/').get(function (req, res) {
+palindromeUnitRoutes.route('/get').get(function (req, res) {
   PalindromeUnit.find(function (err, palindromeUnits) {
     if (err) {
       console.log(err);
@@ -51,7 +51,7 @@ palindromeUnitRoutes.route('/update/:id').post(function (req, res) {
         res.json('Update complete');
       })
         .catch(err => {
-          res.status(400).send("Unable to update database");
+          res.status(400).send("Unable to update database\n" + err);
         });
     }
   });
